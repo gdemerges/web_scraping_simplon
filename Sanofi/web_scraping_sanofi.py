@@ -2,8 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
+#Fonction qui récupère les données des offres d'emploi
 def fetch_jobs_data(url, headers):
-    """Fonction pour extraire les données des offres d'emploi d'une page."""
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -13,11 +13,11 @@ def fetch_jobs_data(url, headers):
         print(f"Erreur lors de la récupération de la page : {response.status_code}")
         return []
 
-def parse_job_data(job):
-    """Fonction pour analyser les données d'une offre d'emploi."""
+#Fonction pour le scraping
+def scrap_job_data(job):
     poste = job.find('h2').text.strip()
     job_location_total = job.find('span', class_="job-location")
-    city, country = job_location_total.get_text().strip().split(', ')
+    city, country = job_location_total.get_text().strip().split(', ') #Sépare la ville et le pays, on enlève la virgule
     job_date_posted = job.find('span', class_="job-date-posted").text.strip()
     return {'Poste': poste, "Ville": city, "Pays": country, "Date": job_date_posted}
 
@@ -29,19 +29,22 @@ def main(n):
     }
 
     jobs_data = []
+
+    #Permet de parcourir les pages
     for page_num in range(0, n):
         url = f"{url_base}{page_num}"
         jobs = fetch_jobs_data(url, headers)
         for job in jobs:
-            job_data = parse_job_data(job)
+            job_data = scrap_job_data(job)
             jobs_data.append(job_data)
 
     if jobs_data:
         df_jobs = pd.DataFrame(jobs_data)
         print(df_jobs.to_string())
+        #Créer un CSV reprenant les données récupérées
         df_jobs.to_csv('jobs_sanofi.csv', index=False)
     else:
         print("Aucune donnée d'emploi récupérée.")
 
-if __name__ == "__main__":
-    main(29)
+#Appelle la fonction main et on passe en paramètre le nombre de pages souhaité
+main(2)
