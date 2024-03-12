@@ -42,7 +42,7 @@ def main(n):
         df_jobs = pd.DataFrame(jobs_data)
         print(df_jobs.to_string())
         #Créer un CSV reprenant les données récupérées
-        df_jobs.to_csv('jobs_sanofi.csv', index=False)
+        df_jobs.to_csv('data/jobs_sanofi.csv', index=False)
     else:
         print("Aucune donnée d'emploi récupérée.")
 
