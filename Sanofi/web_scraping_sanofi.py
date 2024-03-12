@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+from datetime import datetime
 
 #Fonction qui récupère les données des offres d'emploi
 def fetch_jobs_data(url, headers):
@@ -15,11 +16,13 @@ def fetch_jobs_data(url, headers):
 
 #Fonction pour le scraping
 def scrap_job_data(job):
+    link = job.find('a')
+    job_id = link.get('data-job-id') if link else None
     poste = job.find('h2').text.strip()
     job_location_total = job.find('span', class_="job-location")
     city, country = job_location_total.get_text().strip().split(', ') #Sépare la ville et le pays, on enlève la virgule
     job_date_posted = job.find('span', class_="job-date-posted").text.strip()
-    return {'Poste': poste, "Ville": city, "Pays": country, "Date": job_date_posted}
+    return {'ID': job_id, 'Poste': poste, "Ville": city, "Pays": country, "Date": job_date_posted}
 
 def main(n):
     url_base = 'https://fr.jobs.sanofi.com/recherche-d%27offres?k=data+engineer&orgIds=20874&page='
@@ -40,9 +43,12 @@ def main(n):
 
     if jobs_data:
         df_jobs = pd.DataFrame(jobs_data)
+        today = datetime.now().strftime('%Y-%m-%d')
+        filename = f'data/jobs_sanofi_{today}.csv'
+        print(f"Les données ont été enregistrées dans le fichier {filename}.")
         print(df_jobs.to_string())
         #Créer un CSV reprenant les données récupérées
-        df_jobs.to_csv('data/jobs_sanofi.csv', index=False)
+        df_jobs.to_csv(filename, index=False)
     else:
         print("Aucune donnée d'emploi récupérée.")
 
