@@ -51,6 +51,3 @@ def main(n):
         df_jobs.to_csv(filename, index=False)
     else:
         print("Aucune donnée d'emploi récupérée.")
-
-#Appelle la fonction main et on passe en paramètre le nombre de pages souhaité
-main(2)
