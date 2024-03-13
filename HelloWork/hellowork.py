@@ -48,8 +48,6 @@ def main(n):
     if jobs_data:
         df_jobs = pd.DataFrame(jobs_data)
         print(df_jobs.to_string())
-        df_jobs.to_csv('jobs_hellowork.csv', index=False)
+        df_jobs.to_csv('data/jobs_hellowork.csv', index=False)
     else:
         print("Aucune donnée d'emploi récupérée.")
-
-main(2)

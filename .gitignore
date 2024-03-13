@@ -1,3 +1,5 @@
 .DS_Store
 /data
 /Sanofi/__pycache__
+/Sanofi/.DS_Store
+/HelloWork/__pycache__
